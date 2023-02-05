@@ -1,5 +1,6 @@
 import prisma from "./prisma";
 const { getNodeNameById } = require('./getNodeNameById');
+const { getAgentNameById } = require('./getAgentNameById');
 
 async function processRecords(records) {
   const nodeIds = [...new Set(records.map(record => record.nodeId))];
@@ -33,7 +34,11 @@ async function drawGraphByAgent(agentId) {
     },
   });
   const series = await processRecords(records);
-  return series;
+  const title = {
+    text: 'Pinging',
+    subtext: 'From ' + await getAgentNameById(agentId),
+  }
+  return { title, series };
 }
 
 exports.drawGraphByAgent = drawGraphByAgent;

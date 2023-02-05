@@ -70,8 +70,8 @@ app.get('/api/drawGraphByNode', async (req, res) => {
     return;
   }
   try {
-    const series = await drawGraphByNode(req.query.nodeId);
-    res.status(200).json({ status: 'success', series });
+    const { title, series } = await drawGraphByNode(req.query.nodeId);
+    res.status(200).json({ status: 'success', title, series });
   } catch (e) {
     res.status(500).json({ status: 'error', msg: 'Error drawing graph, ' + e });
   }
@@ -83,8 +83,8 @@ app.get('/api/drawGraphByAgent', async (req, res) => {
     return;
   }
   try {
-    const series = await drawGraphByAgent(req.query.agentId);
-    res.status(200).json({ status: 'success', series });
+    const { title, series } = await drawGraphByAgent(req.query.agentId);
+    res.status(200).json({ status: 'success', title, series });
   } catch (e) {
     res.status(500).json({ status: 'error', msg: 'Error drawing graph, ' + e });
   }

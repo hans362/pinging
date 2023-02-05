@@ -12,18 +12,22 @@
   <script>
     var chart = echarts.init(document.getElementById("main"));
     chart.showLoading();
-    $.get("/api/drawGraphByAgent?agentId=1").done(function (data) {
+    const by = new URLSearchParams(window.location.search).get('by') || 'agent';
+    const id = new URLSearchParams(window.location.search).get('id') || 1;
+    const url = `/api/drawGraphBy${by[0].toUpperCase() + by.slice(1)}?${by}Id=${id}`;
+    $.get(url).done(function (data) {
       chart.hideLoading();
       chart.setOption({
-        title: {
-          text: 'Pinging',
-          subtext: 'From agent Guangzhou(Tencent Cloud)'
-        },
+        title: data.title,
         tooltip: {
           trigger: 'axis',
-          position: function (pt) {
-            return [pt[0], '10%'];
-          }
+          position: function (point, params, dom, rect, size) {
+            if (point[0] <= size["viewSize"][0] * 0.5) {
+              return [point[0], "10%"];
+            } else {
+              return [point[0] - size["contentSize"][0], "10%"];
+            }
+          },
         },
         legend: {
           data: data.series.map(function (item) {
