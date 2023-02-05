@@ -1,0 +1,27 @@
+{
+  "name": "pinging",
+  "version": "1.0.0",
+  "description": "",
+  "main": "api/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hans362/pinging.git"
+  },
+  "author": "Hans Yu",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/hans362/pinging/issues"
+  },
+  "homepage": "https://github.com/hans362/pinging#readme",
+  "devDependencies": {
+    "prisma": "^4.9.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.9.0",
+    "express": "^4.18.2",
+    "uuid": "^9.0.0"
+  }
+}

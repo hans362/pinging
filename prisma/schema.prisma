@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Node {
+  id       Int      @id @default(autoincrement())
+  name     String   @db.VarChar(255)
+  hostname String   @db.VarChar(255)
+  Record   Record[]
+
+  @@unique([name])
+}
+
+model Agent {
+  id     Int      @id @default(autoincrement())
+  name   String   @db.VarChar(255)
+  Record Record[]
+
+  @@unique([name])
+}
+
+model Record {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  node      Node     @relation(fields: [nodeId], references: [id])
+  nodeId    Int
+  agent     Agent    @relation(fields: [agentId], references: [id])
+  agentId   Int
+  lantency  Decimal  @db.Decimal(10, 2)
+
+  @@index([nodeId])
+  @@index([agentId])
+}
