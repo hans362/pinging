@@ -3,6 +3,7 @@ const { registerAgent } = require('./lib/registerAgent');
 const { registerNode } = require('./lib/registerNode');
 const { getNodeList } = require('./lib/getNodeList');
 const { registerRecord } = require('./lib/registerRecord');
+const { drawGraph } = require('./lib/drawGraph');
 
 const agentSecret = process.env.AGENT_SECRET;
 
@@ -51,13 +52,30 @@ app.get('/api/getNodeList', async (req, res) => {
 app.get('/api/registerRecord', async (req, res) => {
   if (req.query.secret === agentSecret) {
     try {
-      await registerRecord(req.query.agentId, req.query.nodeId, req.query.lantency);
+      await registerRecord(req.query.agentId, req.query.nodeId, req.query.latency);
       res.status(200).json({ status: 'success', msg: 'Record registered' });
     } catch (e) {
       res.status(500).json({ status: 'error', msg: 'Error registering record, ' + e });
     }
   } else {
     res.status(403).json({ status: 'error', msg: 'Invalid secret' });
+  }
+});
+
+app.get('/api/drawGraph', async (req, res) => {
+  if (!req.query.nodeId) {
+    res.status(400).json({ status: 'error', msg: 'nodeId is required' });
+    return;
+  }
+  try {
+    const svg = await drawGraph(req.query.nodeId);
+    res.writeHead(200, {
+      'Content-Type': 'application/xml'
+    });
+    res.write(svg);
+    res.end();
+  } catch (e) {
+    res.status(500).json({ status: 'error', msg: 'Error drawing graph, ' + e });
   }
 });
 
