@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Pinging</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+</head>
+
+<body>
+  <div id="main" class="chart" style="width: 100%;height: 400px;"></div>
+  <script>
+    var chart = echarts.init(document.getElementById("main"));
+    chart.showLoading();
+    $.get("/api/drawGraphByAgent?agentId=1").done(function (data) {
+      chart.hideLoading();
+      chart.setOption({
+        title: {
+          text: 'Pinging',
+          subtext: 'From agent Guangzhou(Tencent Cloud)'
+        },
+        tooltip: {
+          trigger: 'axis',
+          position: function (pt) {
+            return [pt[0], '10%'];
+          }
+        },
+        legend: {
+          data: data.series.map(function (item) {
+            return item.name;
+          })
+        },
+        xAxis: {
+          type: 'time',
+        },
+        yAxis: {
+          type: 'value',
+          axisLabel: {
+            formatter: '{value} ms'
+          },
+        },
+        series: data.series
+      });
+    });
+    $(window).on('resize', function () {
+      $('.chart').each(function () {
+        var chart = echarts.init(document.getElementById($(this).attr('id')));
+        chart.resize();
+      });
+    });
+  </script>
+</body>
+
+</html>

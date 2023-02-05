@@ -3,8 +3,10 @@ const { registerAgent } = require('./lib/registerAgent');
 const { registerNode } = require('./lib/registerNode');
 const { getNodeList } = require('./lib/getNodeList');
 const { registerRecord } = require('./lib/registerRecord');
-const { drawGraph } = require('./lib/drawGraph');
-
+const { drawGraphByNode } = require('./lib/drawGraphByNode');
+const { drawGraphByAgent } = require('./lib/drawGraphByAgent');
+const { getAgentNameById } = require('./lib/getAgentNameById');
+const { getNodeNameById } = require('./lib/getNodeNameById');
 const agentSecret = process.env.AGENT_SECRET;
 
 app.get('/api/registerAgent', async (req, res) => {
@@ -62,18 +64,27 @@ app.get('/api/registerRecord', async (req, res) => {
   }
 });
 
-app.get('/api/drawGraph', async (req, res) => {
+app.get('/api/drawGraphByNode', async (req, res) => {
   if (!req.query.nodeId) {
     res.status(400).json({ status: 'error', msg: 'nodeId is required' });
     return;
   }
   try {
-    const svg = await drawGraph(req.query.nodeId);
-    res.writeHead(200, {
-      'Content-Type': 'application/xml'
-    });
-    res.write(svg);
-    res.end();
+    const series = await drawGraphByNode(req.query.nodeId);
+    res.status(200).json({ status: 'success', series });
+  } catch (e) {
+    res.status(500).json({ status: 'error', msg: 'Error drawing graph, ' + e });
+  }
+});
+
+app.get('/api/drawGraphByAgent', async (req, res) => {
+  if (!req.query.agentId) {
+    res.status(400).json({ status: 'error', msg: 'agentId is required' });
+    return;
+  }
+  try {
+    const series = await drawGraphByAgent(req.query.agentId);
+    res.status(200).json({ status: 'success', series });
   } catch (e) {
     res.status(500).json({ status: 'error', msg: 'Error drawing graph, ' + e });
   }
