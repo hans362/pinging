@@ -21,6 +21,16 @@
         title: data.title,
         tooltip: {
           trigger: 'axis',
+          formatter: (params) => {
+            var xTime = new Date(params[0].axisValue)
+            let tooltip = `<div style="margin: 0px 0 0;line-height:1;"><div style="margin: 0px 0 0;line-height:1;"><div style="font-size:14px;color:#666;font-weight:400;line-height:1;">${xTime.toLocaleString()}</div><div style="margin: 10px 0 0;line-height:1;">`;
+            data.series.forEach((serie, index) => {
+              value = serie.data.reduce((prev, curr) => Math.abs(new Date(curr[0]).valueOf() - xTime.valueOf()) < Math.abs(new Date(prev[0]).valueOf() - xTime.valueOf()) ? curr : prev)[1]
+              tooltip += `<div style="margin: ${index === 0 ? 0 : 10}px 0 0;line-height:1;"><div style="margin: 0px 0 0;line-height:1;"><span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${chart.getVisual({ seriesIndex: index }, 'color')};"></span><span style="font-size:14px;color:#666;font-weight:400;margin-left:2px">${serie.name}</span><span style="float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900">${value === null ? '-' : value}ms</span><div style="clear:both"></div></div><div style="clear:both"></div></div>`;
+            });
+            tooltip += `<div style="clear:both"></div></div><div style="clear:both"></div></div><div style="clear:both"></div></div>`;
+            return tooltip;
+          },
           position: function (point, params, dom, rect, size) {
             if (point[0] <= size["viewSize"][0] * 0.5) {
               return [point[0], "10%"];

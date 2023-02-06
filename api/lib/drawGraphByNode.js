@@ -16,6 +16,7 @@ async function processRecords(records) {
     });
     series.push({
       name: await getAgentNameById(agentId),
+      symbol: 'none',
       type: 'line',
       data: data,
       smooth: true,
