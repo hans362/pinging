@@ -8,9 +8,11 @@ async function processRecords(records) {
   for await (const nodeId of nodeIds) {
     const nodeRecords = records.filter(record => record.nodeId === nodeId);
     const data = nodeRecords.map(record => [Date.parse(record.createdAt), record.latency == -1 ? null : record.latency]);
-    const loss = nodeRecords.filter(record => record.loss != 0 || record.latency == -1).map(record => {
+    const loss = [];
+    nodeRecords.filter(record => record.loss != 0 || record.latency == -1).forEach(record => {
       const next = nodeRecords.find(nextRecord => nextRecord.createdAt > record.createdAt);
-      return [{ xAxis: Date.parse(record.createdAt) }, { xAxis: Date.parse(next ? next.createdAt : record.createdAt) }];
+      const pushCount = record.latency == -1 ? 10 : Math.round(record.loss / 0.1);
+      for (let i = 0; i < pushCount; i++) loss.push([{ xAxis: Date.parse(record.createdAt) }, { xAxis: Date.parse(next ? next.createdAt : record.createdAt) }]);
     });
     series.push({
       name: await getNodeNameById(nodeId),
@@ -21,7 +23,7 @@ async function processRecords(records) {
         silent: true,
         data: loss,
         itemStyle: {
-          opacity: 0.25,
+          opacity: 0.05,
         },
       },
     });
