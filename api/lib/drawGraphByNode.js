@@ -7,7 +7,7 @@ async function processRecords(records) {
   const series = [];
   for await (const agentId of agentIds) {
     const agentRecords = records.filter(record => record.agentId === agentId);
-    const data = agentRecords.map(record => [Date.parse(record.createdAt), record.latency]);
+    const data = agentRecords.map(record => [Date.parse(record.createdAt), record.latency == -1 ? null : record.latency]);
     series.push({
       name: await getAgentNameById(agentId),
       type: 'line',
@@ -24,9 +24,6 @@ async function drawGraphByNode(nodeId) {
       nodeId: parseInt(nodeId),
       createdAt: {
         gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-      },
-      NOT: {
-        latency: -1,
       },
     },
     orderBy: {
