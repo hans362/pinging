@@ -1,12 +1,13 @@
 import prisma from "./prisma";
 
-async function registerRecord(agentId, nodeId, latency) {
-  if (!agentId || !nodeId || !latency) throw new Error('Invalid record data');
-  const record = await prisma.record.create({
+async function registerRecord(agentId, nodeId, latency, loss) {
+  if (!agentId || !nodeId || !latency || !loss) throw new Error('Invalid record data');
+  await prisma.record.create({
     data: {
       agent: { connect: { id: parseInt(agentId) } },
       node: { connect: { id: parseInt(nodeId) } },
-      latency: parseInt(latency),
+      latency: parseFloat(latency),
+      loss: parseFloat(loss)
     },
   });
   await prisma.$disconnect()

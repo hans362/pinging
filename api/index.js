@@ -54,7 +54,7 @@ app.get('/api/getNodeList', async (req, res) => {
 app.get('/api/registerRecord', async (req, res) => {
   if (req.query.secret === agentSecret) {
     try {
-      await registerRecord(req.query.agentId, req.query.nodeId, req.query.latency);
+      await registerRecord(req.query.agentId, req.query.nodeId, req.query.latency, req.query.loss);
       res.status(200).json({ status: 'success', msg: 'Record registered' });
     } catch (e) {
       res.status(500).json({ status: 'error', msg: 'Error registering record, ' + e });

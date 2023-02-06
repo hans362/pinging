@@ -35,7 +35,8 @@ model Record {
   nodeId    Int
   agent     Agent    @relation(fields: [agentId], references: [id])
   agentId   Int
-  latency  Decimal  @db.Decimal(10, 2)
+  latency   Decimal  @db.Decimal(10, 2)
+  loss      Decimal  @default(0) @db.Decimal(10, 2)
 
   @@index([nodeId])
   @@index([agentId])
